@@ -1,0 +1,100 @@
+
+
+class Solution {
+    public int maxSubArray(int[] nums) {
+        /*
+     //bruth force  
+     //tc=o(n^2)
+     int n=nums.length ;
+     int maxsum=Integer.MIN_VALUE;
+     for(int i=0;i<n;i++){
+        int currsum=0;
+        for(int j=i;j<n;j++){
+            currsum+=nums[j];
+            maxsum=Math.max(maxsum,currsum);
+        }
+     }
+     return maxsum; 
+     */
+    /*
+//THIS IS THE PREFIX SUM+MIN PREFIX METHOD
+
+
+        int prefix = 0, minPrefix = 0, maxSum = Integer.MIN_VALUE;
+
+        for (int num : nums) {
+            prefix += num;
+            maxSum = Math.max(maxSum, prefix - minPrefix);
+            minPrefix = Math.min(minPrefix, prefix);
+        }
+        return maxSum;
+
+
+*/
+/*
+//this is kadane's algorith
+//time complexity=o(n) or o(1)
+    int currentsum=nums[0];
+    int maxsum=nums[0];
+    for(int i=1;i<nums.length;i++){
+        currentsum=Math.max(nums[i],currentsum+nums[i]);
+        maxsum=Math.max(maxsum,currentsum);
+    }
+    return maxsum;
+
+
+    //
+    */
+    /*
+    //this redues time very well
+    
+        int max = nums[0];
+        int len = nums.length;
+        int curr = 0;
+        for (int i=0; i<len; i++) {
+            curr += nums[i];
+            max = (curr > max) ? curr : max;
+            if (curr < 0) curr = 0;
+        }
+        return max;
+*/
+
+    //divide and conqure
+    
+        return helper(nums, 0, nums.length - 1);
+    }
+
+    private int helper(int[] nums, int left, int right) {
+        if (left == right) return nums[left];
+
+        int mid = (left + right) / 2;
+        int leftMax = helper(nums, left, mid);
+        int rightMax = helper(nums, mid + 1, right);
+        int crossMax = crossSum(nums, left, mid, right);
+
+        return Math.max(Math.max(leftMax, rightMax), crossMax);
+    }
+
+    private int crossSum(int[] nums, int left, int mid, int right) {
+        int leftSum = Integer.MIN_VALUE, sum = 0;
+        for (int i = mid; i >= left; i--) {
+            sum += nums[i];
+            leftSum = Math.max(leftSum, sum);
+        }
+
+        int rightSum = Integer.MIN_VALUE;
+        sum = 0;
+        for (int i = mid + 1; i <= right; i++) {
+            sum += nums[i];
+            rightSum = Math.max(rightSum, sum);
+        }
+
+        return leftSum + rightSum;
+
+        
+    
+
+        }
+
+
+}

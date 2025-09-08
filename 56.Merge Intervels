@@ -1,0 +1,97 @@
+class Solution {
+    public int[][] merge(int[][] intervals) {
+/*
+        //thi sapproche will runs butt time complexity=o(n^2) so time limit exceed error 
+        boolean mergesomthing=true;
+        while(mergesomthing){
+            mergesomthing=false;
+            List <int[]> result=new ArrayList<>();
+            for(int i=0;i<intervals.length;i++){
+                if(intervals==null) continue;
+                int[] a=intervals[i];
+                boolean merged=false;
+                for (int j=i+1;j<intervals.length;j++){
+                    if(intervals==null) continue;
+                    int[] b=intervals[i];
+                    //cheking
+                    if(!(a[1]<b[0] || b[1]<a[0])){
+                        a[0]=Math.min(a[0],b[0]);
+                        a[1]=Math.min(a[1],b[1]);
+                        intervals[j]=null;
+                        mergesomthing=true;
+                        merged=true;
+                    }
+                    result.add(a);
+                }
+                intervals=result.toArray(new int[result.size()][]);
+            }
+            
+        }
+        return intervals;
+        */
+       //optimization approche
+       /*
+       Arrays.sort(intervals,(a,b)->Integer.compare(a[0],b[0]));
+       List <int[]> res=new ArrayList<>();
+       int[] curr=intervals[0];
+       res.add(curr);
+       for(int[] interval:intervals){
+        if(interval[0]<=curr[1]){
+            curr[1]=Math.max(curr[1],interval[1]);
+
+        }
+        else{
+            curr=interval;
+            res.add(curr);
+        }
+
+       }
+       return res.toArray(new int[res.size()][] );
+       */
+
+       //this is the unique solution 
+       //time complexity=o(n+m)
+       int max = 0;
+        for (int i = 0; i < intervals.length; i++) {
+            max = Math.max(intervals[i][0], max);
+        }
+
+        int[] mp = new int[max + 1];
+        for (int i = 0; i < intervals.length; i++) {
+            int start = intervals[i][0];
+            int end = intervals[i][1];
+            mp[start] = Math.max(end + 1, mp[start]);
+        }
+
+        int r = 0;
+        int have = -1;
+        int intervalStart = -1;
+        for (int i = 0; i < mp.length; i++) {
+            if (mp[i] != 0) {
+                if (intervalStart == -1) intervalStart = i;
+                have = Math.max(mp[i] - 1, have);
+            }
+            if (have == i) {
+                intervals[r++] = new int[] { intervalStart, have };
+                have = -1;
+                intervalStart = -1;
+            }
+        }
+
+        if (intervalStart != -1) {
+            intervals[r++] = new int[] { intervalStart, have };
+        }
+        if (intervals.length == r) {
+            return intervals;
+        }
+
+        int[][] res = new int[r][];
+        for (int i = 0; i < r; i++) {
+            res[i] = intervals[i];
+        }
+
+        return res;
+
+    }
+}
+
